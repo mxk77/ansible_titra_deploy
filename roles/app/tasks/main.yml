@@ -1,0 +1,85 @@
+---
+- name: Update cache
+  apt:
+    update_cache: yes
+
+- name: Install curl and unzip
+  apt:
+    name:
+      - curl
+      - unzip
+    state: present
+
+- name: Download setup script
+  get_url:
+    url: "https://deb.nodesource.com/setup_22.x"
+    dest: "/tmp/nodesource_setup.sh"
+    mode: '0755'
+
+- name: Run setup script
+  shell: "bash /tmp/nodesource_setup.sh"
+
+- name: Install nodejs (includes npm)
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+
+#- name: Fetch the built bundle archive from build server
+#  fetch:
+#    src: /home/vagrant/titra_bundle.tar.gz
+#    dest: "{{ playbook_dir }}/fetched_bundle/"
+#    flat: yes
+#  delegate_to: build_ans
+
+#- name: Unarchive the built bundle on app server
+#  unarchive:
+#    src: "{{ playbook_dir }}/fetched_bundle/titra_bundle.tar.gz"
+#    dest: /home/vagrant/
+#    remote_src: no
+
+- name: Copy bundle.zip from Ansible control to app server
+  copy:
+    src: /home/vagrant/artifacts/bundle.zip
+    dest: /home/vagrant/bundle.zip
+    mode: '0644'
+
+- name: Unarchive bundle.zip on app server
+  unarchive:
+    src: /home/vagrant/bundle.zip
+    dest: /home/vagrant/bundle/
+    remote_src: yes
+
+- name: Install npm dependencies for the server bundle
+  shell: npm install --production
+  args:
+    chdir: /home/vagrant/bundle/programs/server
+
+- name: Ensure correct ownership and permissions for the bundle directory
+  file:
+    path: /home/vagrant/bundle
+    owner: vagrant
+    group: vagrant
+    mode: '0755'
+    recurse: yes
+
+- name: Deploy PM2 ecosystem config for titra
+  template:
+    src: ecosystem.config.js.j2
+    dest: /home/vagrant/ecosystem.config.js
+    mode: '0644'
+
+- name: Install PM2
+  npm:
+    name: pm2
+    global: yes
+    state: present
+
+- name: Start titra with PM2 using
+  shell: pm2 start /home/vagrant/ecosystem.config.js --env production
+
+- name: Configure PM2 startup
+  shell: pm2 startup systemd -u vagrant --hp /home/vagrant
+
+- name: Save current PM2 process list
+  shell: pm2 save

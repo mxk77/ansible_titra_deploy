@@ -1,0 +1,25 @@
+---
+#- name: Build Titra application bundle
+#  hosts: build
+#  become: yes
+#  roles:
+#    - build
+
+- name: Deploy Titra database
+  hosts: db
+  become: yes
+  roles:
+    - db
+
+- name: Deploy Titra runtime application
+  hosts: app
+  serial: 1
+  become: yes
+  roles:
+    - app
+
+- name: Deploy Nginx reverse proxy for Titra
+  hosts: nginx
+  become: yes
+  roles:
+    - nginx
