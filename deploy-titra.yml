@@ -1,25 +1,31 @@
 ---
-#- name: Build Titra application bundle
-#  hosts: build
-#  become: yes
-#  roles:
-#    - build
-
-- name: Deploy Titra database
+- name: Deploy MongoDB Database for Titra
   hosts: db
   become: yes
+  gather_facts: yes
+  tags:
+    - db
+    - deploy
   roles:
     - db
 
-- name: Deploy Titra runtime application
+- name: Deploy Titra Application Runtime
   hosts: app
-  serial: 1
   become: yes
+  gather_facts: yes
+  serial: 1 # Rolling update: deploy to one host at a time.
+  tags:
+    - app
+    - deploy
   roles:
     - app
 
-- name: Deploy Nginx reverse proxy for Titra
+- name: Deploy Nginx Reverse Proxy for Titra
   hosts: nginx
   become: yes
+  gather_facts: yes
+  tags:
+    - nginx
+    - deploy
   roles:
     - nginx

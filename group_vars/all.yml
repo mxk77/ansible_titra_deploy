@@ -1,12 +1,3 @@
-default_ansible_user: vagrant
-
-ips:
-  build: "192.168.50.8"
-  app1: "192.168.50.7"
-  app2: "192.168.50.10"
-  nginx: "192.168.50.9"
-  db: "192.168.50.6"
-
 ports:
   app: 3000
   mongo: 27017
