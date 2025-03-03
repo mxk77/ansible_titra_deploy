@@ -1,12 +1,12 @@
 module.exports = {
-  apps : [{
+  apps: [{
     name: "titra",
     script: "{{ bundle_extract_path }}/main.js",
     env: {
       NODE_ENV: "production",
       ROOT_URL: "http://{{ ansible_host }}:{{ app_port }}",
-      MONGO_URL: "mongodb://{{ hostvars[groups['db'][0]].ansible_host }}:{{ mongo_port }}/titra",,
-      PORT: "{{ app_port }}",
+      MONGO_URL: "mongodb://{{ hostvars[groups['db'][0]].ansible_host }}:{{ mongo_port }}/titra",
+      PORT: "{{ app_port }}"
     }
   }]
 };
