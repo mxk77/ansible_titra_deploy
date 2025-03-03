@@ -9,6 +9,7 @@
     - reload nginx
   tags:
     - nginx
+    - configure
 
 - name: Enable Nginx proxy site
   file:
@@ -19,6 +20,7 @@
     - reload nginx
   tags:
     - nginx
+    - configure
 
 - name: Test Nginx configuration
   command: nginx -t
@@ -27,3 +29,4 @@
   failed_when: nginx_test.rc != 0
   tags:
     - nginx
+    - configure
