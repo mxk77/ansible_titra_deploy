@@ -1,0 +1,29 @@
+# tasks/configure.yml
+---
+- name: Deploy Nginx proxy configuration for Titra
+  template:
+    src: titra_proxy.j2
+    dest: "{{ nginx_conf_path }}/titra_proxy"
+    mode: "0644"
+  notify:
+    - reload nginx
+  tags:
+    - nginx
+
+- name: Enable Nginx proxy site
+  file:
+    src: "{{ nginx_conf_path }}/titra_proxy"
+    dest: "{{ nginx_enabled_path }}/titra_proxy"
+    state: link
+  notify:
+    - reload nginx
+  tags:
+    - nginx
+
+- name: Test Nginx configuration
+  command: nginx -t
+  register: nginx_test
+  changed_when: false
+  failed_when: nginx_test.rc != 0
+  tags:
+    - nginx

@@ -1,17 +1,21 @@
 upstream titra_backend {
-    server {{ ips.app1 }}:{{ ports.app }};
-    server {{ ips.app2 }}:{{ ports.app }};
+  {% for host in groups['app'] %}
+  server {{ hostvars[host]['ansible_host'] }}:{{ app_port }};
+  {% endfor %}
 }
 
 server {
-    listen 80;
-    server_name {{ nginx.name }} {{ ips.nginx }};
+    listen {{ nginx_listen_port }};
+    # If you only have one host in 'nginx' group, you can do:
+    server_name {{ nginx_name }} {{ hostvars[groups['nginx'][0]].ansible_host }};
+    # or rely on a single variable, e.g.:
+    # server_name {{ nginx_name }} {{ nginx_server_ip }};
 
     location / {
         proxy_pass http://titra_backend;
-	proxy_http_version 1.1;
-	proxy_set_header Upgrade $http_upgrade;
-	proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

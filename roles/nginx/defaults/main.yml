@@ -1,0 +1,10 @@
+# defaults/main.yml
+nginx_package_name: "nginx"
+nginx_conf_path: "/etc/nginx/sites-available"
+nginx_enabled_path: "/etc/nginx/sites-enabled"
+nginx_listen_port: 80
+nginx_name: "titra_local"
+
+app_port: 3000
+
+nginx_server_ip: ""
