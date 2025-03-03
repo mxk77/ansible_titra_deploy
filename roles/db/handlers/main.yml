@@ -1,5 +1,6 @@
+# handlers/main.yml
 ---
 - name: Restart MongoDB
   systemd:
-    name: mongod
+    name: "{{ mongo_service_name }}"
     state: restarted

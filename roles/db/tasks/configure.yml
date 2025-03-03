@@ -1,0 +1,21 @@
+# tasks/configure.yml
+---
+- name: Deploy mongod.conf from template
+  template:
+    src: mongod.conf.j2
+    dest: "{{ mongo_config_path }}"
+    mode: "0644"
+  notify:
+    - Restart MongoDB
+  tags:
+    - db
+    - configure
+
+- name: Start and enable MongoDB service
+  systemd:
+    name: "{{ mongo_service_name }}"
+    state: started
+    enabled: yes
+  tags:
+    - db
+    - configure

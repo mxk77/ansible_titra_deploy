@@ -1,0 +1,50 @@
+# tasks/install.yml
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  tags:
+    - db
+    - install
+
+- name: Install prerequisites for MongoDB
+  apt:
+    name:
+      - gnupg
+      - wget
+    state: present
+  tags:
+    - db
+    - install
+
+- name: Add MongoDB public GPG key
+  apt_key:
+    url: "https://www.mongodb.org/static/pgp/server-{{ mongo_major_version }}.asc"
+    state: present
+  tags:
+    - db
+    - install
+
+- name: Add MongoDB repository
+  apt_repository:
+    repo: "{{ mongo_repo_url }}"
+    filename: "{{ mongo_repo_filename }}"
+    state: present
+  tags:
+    - db
+    - install
+
+- name: Update apt cache after adding MongoDB repo
+  apt:
+    update_cache: yes
+  tags:
+    - db
+    - install
+
+- name: Install MongoDB packages
+  apt:
+    name: "{{ mongo_package_name }}"
+    state: present
+  tags:
+    - db
+    - install

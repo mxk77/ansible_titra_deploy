@@ -1,43 +1,4 @@
-- name: Update apt cache
-  apt:
-    update_cache: yes
-
-- name: Install prerequisites for MongoDB
-  apt:
-    name:
-      - gnupg
-      - wget
-    state: present
-
-- name: Add MongoDB public GPG key for 4.4
-  apt_key:
-    url: https://www.mongodb.org/static/pgp/server-4.4.asc
-    state: present
-
-- name: Add MongoDB repository for MongoDB 4.4 on Ubuntu 20.04
-  apt_repository:
-    repo: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse"
-    filename: mongodb-org-4.4
-    state: present
-
-- name: Update apt cache after adding MongoDB repo
-  apt:
-    update_cache: yes
-
-- name: Install MongoDB packages
-  apt:
-    name: mongodb-org
-    state: present
-
-- name: Deploy mongod.conf from template
-  template:
-    src: mongod.conf.j2
-    dest: /etc/mongod.conf
-    mode: '0644'
-  notify: Restart MongoDB
-
-- name: Start and enable MongoDB service
-  systemd:
-    name: mongod
-    state: started
-    enabled: yes
+# tasks/main.yml
+---
+- import_tasks: install.yml
+- import_tasks: configure.yml

@@ -1,0 +1,13 @@
+# defaults/main.yml
+---
+# MongoDB version, repo, and file details
+mongo_major_version: "4.4"
+mongo_repo_url: "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/{{ mongo_major_version }} multiverse"
+mongo_repo_filename: "mongodb-org-{{ mongo_major_version }}"
+mongo_package_name: "mongodb-org"
+mongo_service_name: "mongod"
+mongo_config_path: "/etc/mongod.conf"
+
+# Ports and networking
+mongo_port: 27017
+mongo_bind_ip: "0.0.0.0"
