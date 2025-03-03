@@ -1,8 +1,0 @@
-ports:
-  app: 3000
-  mongo: 27017
-
-nginx:
-  name: "titra_local"
-
-MONGO_URL: "mongodb://{{ ips.db }}:{{ ports.mongo }}/titra"

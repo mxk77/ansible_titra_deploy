@@ -1,0 +1,6 @@
+# handlers/main.yml
+---
+- name: restart pm2
+  shell: pm2 restart ecosystem.config.js --env {{ pm2_env }}
+  args:
+    chdir: "/home/{{ app_user }}"

@@ -1,12 +1,12 @@
 module.exports = {
   apps : [{
     name: "titra",
-    script: "/home/vagrant/bundle/main.js",
+    script: "{{ bundle_extract_path }}/main.js",
     env: {
       NODE_ENV: "production",
-      ROOT_URL: "http://{{ ansible_host }}:{{ ports.app }}",
-      MONGO_URL: "{{ MONGO_URL }}",
-      PORT: "{{ ports.app }}"
+      ROOT_URL: "http://{{ ansible_host }}:{{ app_port }}", }}",
+      MONGO_URL: "mongodb://{{ hostvars[groups['db'][0]].ansible_host }}:{{ mongo_port }}/titra",,
+      PORT: "{{ app_port }}",
     }
   }]
 };

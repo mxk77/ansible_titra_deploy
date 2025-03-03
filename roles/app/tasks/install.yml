@@ -1,0 +1,51 @@
+# tasks/install.yml
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  tags:
+    - app
+    - install
+
+- name: Install curl and unzip
+  apt:
+    name:
+      - curl
+      - unzip
+    state: present
+  tags:
+    - app
+    - install
+
+- name: Download Node.js setup script
+  get_url:
+    url: "{{ node_setup_url }}"
+    dest: "/tmp/nodesource_setup.sh"
+    mode: "0755"
+  tags:
+    - app
+    - install
+
+- name: Run Node.js setup script
+  shell: "bash /tmp/nodesource_setup.sh"
+  tags:
+    - app
+    - install
+
+- name: Install nodejs (includes npm)
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+  tags:
+    - app
+    - install
+
+- name: Install PM2 globally (optional)
+  npm:
+    name: pm2
+    global: "{{ pm2_global_install }}"
+    state: present
+  tags:
+    - app
+    - install

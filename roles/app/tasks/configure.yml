@@ -1,0 +1,68 @@
+# tasks/configure.yml
+---
+- name: Copy application bundle to app server
+  copy:
+    src: "{{ artifact_src }}"
+    dest: "{{ artifact_dest }}"
+    mode: "0644"
+  tags:
+    - app
+    - configure
+
+- name: Unarchive bundle on app server
+  unarchive:
+    src: "{{ artifact_dest }}"
+    dest: "{{ bundle_extract_path }}"
+    remote_src: yes
+  tags:
+    - app
+    - configure
+
+- name: Install npm dependencies for the server bundle
+  shell: npm install --production
+  args:
+    chdir: "{{ bundle_extract_path }}/programs/server"
+  tags:
+    - app
+    - configure
+
+- name: Ensure correct ownership for the bundle directory
+  file:
+    path: "{{ bundle_extract_path }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: "0755"
+    recurse: yes
+  tags:
+    - app
+    - configure
+
+- name: Deploy PM2 ecosystem config for Titra
+  template:
+    src: ecosystem.config.js.j2
+    dest: "/home/{{ app_user }}/ecosystem.config.js"
+    mode: "0644"
+  tags:
+    - app
+    - configure
+  notify: restart pm2
+
+- name: Start Titra with PM2
+  shell: pm2 start /home/{{ app_user }}/ecosystem.config.js --env {{ pm2_env }}
+  args:
+    chdir: "/home/{{ app_user }}"
+  tags:
+    - app
+    - configure
+
+- name: Configure PM2 startup
+  shell: pm2 startup systemd -u {{ app_user }} --hp /home/{{ app_user }}
+  tags:
+    - app
+    - configure
+
+- name: Save current PM2 process list
+  shell: pm2 save
+  tags:
+    - app
+    - configure

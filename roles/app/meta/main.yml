@@ -1,0 +1,4 @@
+# app/meta/main.yml
+---
+dependencies:
+  - role: db

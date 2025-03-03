@@ -1,0 +1,23 @@
+# defaults/main.yml
+---
+# Node.js version or repo details (example)
+node_setup_url: "https://deb.nodesource.com/setup_22.x"
+
+# Paths and filenames
+artifact_src: "/home/vagrant/artifacts/bundle.zip"
+artifact_dest: "/home/vagrant/bundle.zip"
+bundle_extract_path: "/home/vagrant/bundle"
+
+# User & group for the app
+app_user: "vagrant"
+app_group: "vagrant"
+
+# PM2 settings (can be overridden if needed)
+pm2_global_install: true
+pm2_env: "production"
+
+# Database port
+mongo_port: 27017
+
+# App port
+app_port: 3000
