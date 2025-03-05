@@ -24,17 +24,11 @@
 - name: Parse download URL for bundle.zip asset
   set_fact:
     bundle_download_url: >-
-      {{
-        release_info.json.assets
-        | selectattr('name', 'equalto', release_asset_name)
-        | list
-        | first
-        | default({}) 
-        | dict2items
-        | selectattr('key','equalto','browser_download_url')
-        | list
-        | first.value
-      }}
+      {{ (release_info.json.assets
+          | selectattr('name', 'equalto', release_asset_name)
+          | list
+          | first
+        ).browser_download_url | d('') }}
   tags:
     - app
     - configure
