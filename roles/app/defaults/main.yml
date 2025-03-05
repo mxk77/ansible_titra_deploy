@@ -4,9 +4,13 @@
 node_setup_url: "https://deb.nodesource.com/setup_22.x"
 
 # Paths and filenames
-artifact_src: "/home/vagrant/artifacts/bundle.zip"
+# artifact_src: "/home/vagrant/artifacts/bundle.zip"
 artifact_dest: "/home/vagrant/bundle.zip"
 bundle_extract_path: "/home/vagrant/bundle"
+
+# GitHub settings
+github_repo: "mxk77/titra"
+release_asset_name: "bundle.zip"
 
 # User & group for the app
 app_user: "vagrant"

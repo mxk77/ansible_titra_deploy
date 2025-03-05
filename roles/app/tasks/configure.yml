@@ -1,8 +1,47 @@
 # tasks/configure.yml
 ---
-- name: Copy application bundle to app server
-  copy:
-    src: "{{ artifact_src }}"
+# - name: Copy application bundle to app server
+#   copy:
+#     src: "{{ artifact_src }}"
+#     dest: "{{ artifact_dest }}"
+#     mode: "0644"
+#   tags:
+#     - app
+#     - configure
+
+- name: Get latest release info from GitHub
+  uri:
+    url: "https://api.github.com/repos/{{ github_repo }}/releases/latest"
+    method: GET
+    return_content: yes
+    headers:
+      Accept: "application/vnd.github.v3+json"
+  register: release_info
+  tags:
+    - app
+    - configure
+
+- name: Parse download URL for bundle.zip asset
+  set_fact:
+    bundle_download_url: >-
+      {{
+        release_info.json.assets
+        | selectattr('name', 'equalto', release_asset_name)
+        | list
+        | first
+        | default({}) 
+        | dict2items
+        | selectattr('key','equalto','browser_download_url')
+        | list
+        | first.value
+      }}
+  tags:
+    - app
+    - configure
+
+- name: Download bundle.zip from latest GitHub release
+  get_url:
+    url: "{{ bundle_download_url }}"
     dest: "{{ artifact_dest }}"
     mode: "0644"
   tags:
